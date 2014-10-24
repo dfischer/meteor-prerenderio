@@ -5,7 +5,8 @@ Package.describe({
 });
 
 Npm.depends({
-  'prerender-node': '1.0.6'
+  'prerender-node': '1.0.6',
+  'send' : '0.10.1'
 });
 
 
