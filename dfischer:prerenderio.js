@@ -1,6 +1,5 @@
 // Write your package code here!
-console.info(Meteor.settings.PrerenderIO.token);
-console.info('wtf bro');
+console.info('Prerender Token:',Meteor.settings.PrerenderIO.token);
 Meteor.startup(function() {
   var prerenderio = Npm.require('prerender-node').set('prerenderToken', Meteor.settings.PrerenderIO.token);
 
