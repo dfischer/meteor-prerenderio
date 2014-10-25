@@ -3,6 +3,13 @@ console.info('Prerender Token:',Meteor.settings.PrerenderIO.token);
 
 var prerenderio = Npm.require('prerender-node').set('prerenderToken', Meteor.settings.PrerenderIO.token);
 var send = Npm.require('send');
+
+// adding in Npm.require('depd'); seems to be troublesome at this point..
+var deprecate = function(msg) {
+  return console.log(msg);
+};
+
+
 WebApp.rawConnectHandlers.use(function(req, res, next) {
 
     req.get = function(param) {
