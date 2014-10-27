@@ -5,6 +5,12 @@ var prerenderio = Npm.require('prerender-node').set('prerenderToken', Meteor.set
 var send = Npm.require('send');
 var deprecate = Npm.require('depd')('express');
 
+// adding in Npm.require('depd'); seems to be troublesome at this point..
+var deprecate = function(msg) {
+  return console.log(msg);
+};
+
+
 Meteor.startup(function() {
   WebApp.rawConnectHandlers.use(function(req, res, next) {
 
