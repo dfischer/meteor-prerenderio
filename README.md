@@ -14,3 +14,5 @@ In your settings.json file include:
   }
 }
 ```
+
+Thanks to @electricjesus for 99% of the development.
