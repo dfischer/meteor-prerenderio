@@ -3,145 +3,149 @@ console.info('Prerender Token:',Meteor.settings.PrerenderIO.token);
 
 var prerenderio = Npm.require('prerender-node').set('prerenderToken', Meteor.settings.PrerenderIO.token);
 var send = Npm.require('send');
-WebApp.rawConnectHandlers.use(function(req, res, next) {
+var deprecate = Npm.require('depd')('express');
 
-    req.get = function(param) {
-      return req.headers[param.toLowerCase()];
+Meteor.startup(function() {
+  WebApp.rawConnectHandlers.use(function(req, res, next) {
+
+      req.get = function(param) {
+        return req.headers[param.toLowerCase()];
+      };
+
+      res.req = req;
+
+      res.status = function(code){
+      this.statusCode = code;
+      return this;
     };
 
-    res.req = req;
+      res.set =
+    res.header = function header(field, val) {
+      if (arguments.length === 2) {
+        if (Array.isArray(val)) val = val.map(String);
+        else val = String(val);
+        if ('content-type' == field.toLowerCase() && !/;\s*charset\s*=/.test(val)) {
+          var charset = send.mime.charsets.lookup(val.split(';')[0]);
+          if (charset) val += '; charset=' + charset.toLowerCase();
+        }
+        this.setHeader(field, val);
+      } else {
+        for (var key in field) {
+          this.set(key, field[key]);
+        }
+      }
+      return this;
+    };
 
-    res.status = function(code){
-	  this.statusCode = code;
-	  return this;
-	};
+    res.get = function(field){
+      return this.getHeader(field);
+    };
 
-    res.set =
-	res.header = function header(field, val) {
-	  if (arguments.length === 2) {
-	    if (Array.isArray(val)) val = val.map(String);
-	    else val = String(val);
-	    if ('content-type' == field.toLowerCase() && !/;\s*charset\s*=/.test(val)) {
-	      var charset = send.mime.charsets.lookup(val.split(';')[0]);
-	      if (charset) val += '; charset=' + charset.toLowerCase();
-	    }
-	    this.setHeader(field, val);
-	  } else {
-	    for (var key in field) {
-	      this.set(key, field[key]);
-	    }
-	  }
-	  return this;
-	};
+    res.send = function send(body) {
+      var chunk = body;
+      var encoding;
+      var len;
+      var req = this.req;
+      var type;
 
-	res.get = function(field){
-		return this.getHeader(field);
-	};
+      // settings
+      var app = this.app;
 
-	res.send = function send(body) {		
-	  var chunk = body;
-	  var encoding;
-	  var len;
-	  var req = this.req;
-	  var type;
+      // allow status / body
+      if (arguments.length === 2) {
+        // res.send(body, status) backwards compat
+        if (typeof arguments[0] !== 'number' && typeof arguments[1] === 'number') {
+          deprecate('res.send(body, status): Use res.status(status).send(body) instead');
+          this.statusCode = arguments[1];
+        } else {
+          deprecate('res.send(status, body): Use res.status(status).send(body) instead');
+          this.statusCode = arguments[0];
+          chunk = arguments[1];
+        }
+      }
 
-	  // settings
-	  var app = this.app;
+      // disambiguate res.send(status) and res.send(status, num)
+      if (typeof chunk === 'number' && arguments.length === 1) {
+        // res.send(status) will set status message as text string
+        if (!this.get('Content-Type')) {
+          this.type('txt');
+        }
 
-	  // allow status / body
-	  if (arguments.length === 2) {
-	    // res.send(body, status) backwards compat
-	    if (typeof arguments[0] !== 'number' && typeof arguments[1] === 'number') {
-	      deprecate('res.send(body, status): Use res.status(status).send(body) instead');
-	      this.statusCode = arguments[1];
-	    } else {
-	      deprecate('res.send(status, body): Use res.status(status).send(body) instead');
-	      this.statusCode = arguments[0];
-	      chunk = arguments[1];
-	    }
-	  }
+        deprecate('res.send(status): Use res.sendStatus(status) instead');
+        this.statusCode = chunk;
+        chunk = http.STATUS_CODES[chunk];
+      }
 
-	  // disambiguate res.send(status) and res.send(status, num)
-	  if (typeof chunk === 'number' && arguments.length === 1) {
-	    // res.send(status) will set status message as text string
-	    if (!this.get('Content-Type')) {
-	      this.type('txt');
-	    }
+      switch (typeof chunk) {
+        // string defaulting to html
+        case 'string':
+          if (!this.get('Content-Type')) {
+            this.type('html');
+          }
+          break;
+        case 'boolean':
+        case 'number':
+        case 'object':
+          if (chunk === null) {
+            chunk = '';
+          } else if (Buffer.isBuffer(chunk)) {
+            if (!this.get('Content-Type')) {
+              this.type('bin');
+            }
+          } else {
+            return this.json(chunk);
+          }
+          break;
+      }
 
-	    deprecate('res.send(status): Use res.sendStatus(status) instead');
-	    this.statusCode = chunk;
-	    chunk = http.STATUS_CODES[chunk];
-	  }
+      // write strings in utf-8
+      if (typeof chunk === 'string') {
+        encoding = 'utf8';
+        type = this.get('Content-Type');
 
-	  switch (typeof chunk) {
-	    // string defaulting to html
-	    case 'string':
-	      if (!this.get('Content-Type')) {
-	        this.type('html');
-	      }
-	      break;
-	    case 'boolean':
-	    case 'number':
-	    case 'object':
-	      if (chunk === null) {
-	        chunk = '';
-	      } else if (Buffer.isBuffer(chunk)) {
-	        if (!this.get('Content-Type')) {
-	          this.type('bin');
-	        }
-	      } else {
-	        return this.json(chunk);
-	      }
-	      break;
-	  }
+        // reflect this in content-type
+        if (typeof type === 'string') {
+          this.set('Content-Type', 'utf-8');
+        }
+      }
 
-	  // write strings in utf-8
-	  if (typeof chunk === 'string') {
-	    encoding = 'utf8';
-	    type = this.get('Content-Type');
+      // populate Content-Length
+      if (chunk !== undefined) {
+        if (!Buffer.isBuffer(chunk)) {
+          // convert chunk to Buffer; saves later double conversions
+          chunk = new Buffer(chunk, encoding);
+          encoding = undefined;
+        }
 
-	    // reflect this in content-type
-	    if (typeof type === 'string') {
-	      this.set('Content-Type', 'utf-8');
-	    }
-	  }
+        len = chunk.length;
+        this.set('Content-Length', len);
+      }
 
-	  // populate Content-Length
-	  if (chunk !== undefined) {
-	    if (!Buffer.isBuffer(chunk)) {
-	      // convert chunk to Buffer; saves later double conversions
-	      chunk = new Buffer(chunk, encoding);
-	      encoding = undefined;
-	    }
+      // method check
+      var isHead = req.method === 'HEAD';
 
-	    len = chunk.length;
-	    this.set('Content-Length', len);
-	  }
+      // freshness
+      if (req.fresh) this.statusCode = 304;
 
-	  // method check
-	  var isHead = req.method === 'HEAD';
+      // strip irrelevant headers
+      if (204 == this.statusCode || 304 == this.statusCode) {
+        this.removeHeader('Content-Type');
+        this.removeHeader('Content-Length');
+        this.removeHeader('Transfer-Encoding');
+        chunk = '';
+      }
 
-	  // freshness
-	  if (req.fresh) this.statusCode = 304;
+      // skip body for HEAD
+      if (isHead) {
+        this.end();
+      }
 
-	  // strip irrelevant headers
-	  if (204 == this.statusCode || 304 == this.statusCode) {
-	    this.removeHeader('Content-Type');
-	    this.removeHeader('Content-Length');
-	    this.removeHeader('Transfer-Encoding');
-	    chunk = '';
-	  }
+      // respond
+      this.end(chunk, encoding);
 
-	  // skip body for HEAD
-	  if (isHead) {
-	    this.end();
-	  }
+      return this;
+    };
 
-	  // respond
-	  this.end(chunk, encoding);
-
-	  return this;
-	};
-
-    return prerenderio(req, res, next);		        
+      return prerenderio(req, res, next);
+  });
 });

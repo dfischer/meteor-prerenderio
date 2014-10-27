@@ -6,13 +6,15 @@ Package.describe({
 
 Npm.depends({
   'prerender-node': '1.0.6',
-  'send' : '0.10.1'
+  'send' : '0.10.1',
+  'depd' : '1.0.0'
 });
 
 
 Package.onUse(function(api) {
   api.versionsFrom('METEOR@0.9.1.1');
   api.addFiles('dfischer:prerenderio.js', 'server');
+  api.addFiles('dfischer:prerender.html', 'client');
 });
 
 Package.onTest(function(api) {

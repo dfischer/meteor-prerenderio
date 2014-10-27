@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "depd": {
+      "version": "1.0.0"
+    },
     "prerender-node": {
       "version": "1.0.6",
       "dependencies": {
@@ -92,6 +95,51 @@
               "version": "0.0.4"
             }
           }
+        }
+      }
+    },
+    "send": {
+      "version": "0.10.1",
+      "dependencies": {
+        "debug": {
+          "version": "2.1.0"
+        },
+        "depd": {
+          "version": "1.0.0"
+        },
+        "destroy": {
+          "version": "1.0.3"
+        },
+        "escape-html": {
+          "version": "1.0.1"
+        },
+        "etag": {
+          "version": "1.5.0",
+          "dependencies": {
+            "crc": {
+              "version": "3.0.0"
+            }
+          }
+        },
+        "fresh": {
+          "version": "0.2.4"
+        },
+        "mime": {
+          "version": "1.2.11"
+        },
+        "ms": {
+          "version": "0.6.2"
+        },
+        "on-finished": {
+          "version": "2.1.1",
+          "dependencies": {
+            "ee-first": {
+              "version": "1.1.0"
+            }
+          }
+        },
+        "range-parser": {
+          "version": "1.0.2"
         }
       }
     }
