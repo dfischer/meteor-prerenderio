@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Node wrapper for prerenderio",
-  version: "1.0.1",
+  version: "1.0.2",
   git: "git@github.com:dfischer/meteor-prerenderio.git"
 });
 
@@ -12,6 +12,7 @@ Npm.depends({
 
 
 Package.onUse(function(api) {
+  api.use(['templating'], 'client');
   api.versionsFrom('METEOR@0.9.1.1');
   api.addFiles('dfischer:prerenderio.js', 'server');
   api.addFiles('dfischer:prerender.html', 'client');
