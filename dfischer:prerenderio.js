@@ -1,7 +1,12 @@
 // Write your package code here!
-console.info('Prerender Token:',Meteor.settings.PrerenderIO.token);
 
-var prerenderio = Npm.require('prerender-node').set('prerenderToken', Meteor.settings.PrerenderIO.token);
+var prerenderio = Npm.require('prerender-node');
+
+if(typeof(Meteor.settings.PrerenderIO)=="object" && typeof(Meteor.settings.PrerenderIO.token)!="undefined") {
+  console.info('Prerender Token:',Meteor.settings.PrerenderIO.token);
+  prerenderio.set('prerenderToken', Meteor.settings.PrerenderIO.token);
+}
+
 var send = Npm.require('send');
 var deprecate = Npm.require('depd')('express');
 
