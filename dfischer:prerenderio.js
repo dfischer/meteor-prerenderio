@@ -30,8 +30,7 @@ Meteor.startup(function() {
       return this;
     };
 
-      res.set =
-    res.header = function header(field, val) {
+    res.set = res.header = function header(field, val) {
       if (arguments.length === 2) {
         if (Array.isArray(val)) val = val.map(String);
         else val = String(val);
