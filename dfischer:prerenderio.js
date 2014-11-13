@@ -19,13 +19,13 @@ var deprecate = function(msg) {
 Meteor.startup(function() {
   WebApp.rawConnectHandlers.use(function(req, res, next) {
 
-      req.get = function(param) {
-        return req.headers[param.toLowerCase()];
-      };
+    req.get = function(param) {
+      return req.headers[param.toLowerCase()];
+    };
 
-      res.req = req;
+    res.req = req;
 
-      res.status = function(code){
+    res.status = function(code){
       this.statusCode = code;
       return this;
     };
