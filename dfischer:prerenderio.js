@@ -1,6 +1,6 @@
 // Write your package code here!
 
-var prerenderio = Npm.require('prerender-node');
+this.prerenderio = Npm.require('prerender-node');
 
 if(typeof(Meteor.settings.PrerenderIO)=="object" && typeof(Meteor.settings.PrerenderIO.token)!="undefined") {
   console.info('Prerender Token:',Meteor.settings.PrerenderIO.token);
@@ -19,19 +19,18 @@ var deprecate = function(msg) {
 Meteor.startup(function() {
   WebApp.rawConnectHandlers.use(function(req, res, next) {
 
-      req.get = function(param) {
-        return req.headers[param.toLowerCase()];
-      };
+    req.get = function(param) {
+      return req.headers[param.toLowerCase()];
+    };
 
-      res.req = req;
+    res.req = req;
 
-      res.status = function(code){
+    res.status = function(code){
       this.statusCode = code;
       return this;
     };
 
-      res.set =
-    res.header = function header(field, val) {
+    res.set = res.header = function header(field, val) {
       if (arguments.length === 2) {
         if (Array.isArray(val)) val = val.map(String);
         else val = String(val);
