@@ -1,7 +1,7 @@
 Package.describe({
   summary: "Node wrapper for prerenderio",
   version: "1.0.4",
-  git: "git@github.com:dfischer/meteor-prerenderio.git"
+  git: "https://github.com/dfischer/meteor-prerenderio"
 });
 
 Npm.depends({
