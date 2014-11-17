@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Node wrapper for prerenderio",
-  version: "1.0.4",
+  version: "1.0.5",
   git: "https://github.com/dfischer/meteor-prerenderio"
 });
 
