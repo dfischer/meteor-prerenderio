@@ -4,7 +4,11 @@ this.prerenderio = Npm.require('prerender-node');
 
 if(typeof(Meteor.settings.PrerenderIO)=="object" && typeof(Meteor.settings.PrerenderIO.token)!="undefined") {
   console.info('Prerender Token:',Meteor.settings.PrerenderIO.token);
-  prerenderio.set('prerenderToken', Meteor.settings.PrerenderIO.token);
+  prerenderio.set('prerenderToken',Meteor.settings.PrerenderIO.token);
+  if (typeof(Meteor.settings.PrerenderIO.prerenderServiceUrl!="undefined")) {
+    console.info('Prerender Service URL:',Meteor.settings.PrerenderIO.prerenderServiceUrl);
+    prerenderio.set('prerenderServiceUrl',Meteor.settings.PrerenderIO.prerenderServiceUrl);
+  }
 }
 
 var send = Npm.require('send');
