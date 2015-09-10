@@ -1,2 +1,16 @@
 .build*
 .npm*
+
+.idea/.name
+
+.idea/deployment.xml
+
+.idea/meteor-prerenderio.iml
+
+.idea/misc.xml
+
+.idea/modules.xml
+
+.idea/vcs.xml
+
+.idea/workspace.xml
