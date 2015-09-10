@@ -1,11 +1,11 @@
 Package.describe({
   summary: "Node wrapper for prerenderio",
-  version: "1.0.5",
+  version: "1.0.6",
   git: "https://github.com/dfischer/meteor-prerenderio"
 });
 
 Npm.depends({
-  'prerender-node': '1.0.6',
+  'prerender-node': '1.1.1',
   'send' : '0.10.1',
   'depd' : '1.0.0'
 });
