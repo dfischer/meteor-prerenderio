@@ -82,7 +82,7 @@ Meteor.startup(function() {
       if (typeof chunk === 'number' && arguments.length === 1) {
         // res.send(status) will set status message as text string
         if (!this.get('Content-Type')) {
-          this.type('txt');
+          this.set('Content-Type', 'text/plain');
         }
 
         deprecate('res.send(status): Use res.sendStatus(status) instead');
@@ -94,7 +94,7 @@ Meteor.startup(function() {
         // string defaulting to html
         case 'string':
           if (!this.get('Content-Type')) {
-            this.type('html');
+            this.set('Content-Type', 'text/html');
           }
           break;
         case 'boolean':
@@ -104,7 +104,7 @@ Meteor.startup(function() {
             chunk = '';
           } else if (Buffer.isBuffer(chunk)) {
             if (!this.get('Content-Type')) {
-              this.type('bin');
+              this.set('Content-Type', 'application/octet-stream');
             }
           } else {
             return this.json(chunk);
