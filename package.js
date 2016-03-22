@@ -15,12 +15,12 @@ Npm.depends({
 Package.onUse(function(api) {
   api.use(['templating'], 'client');
   api.versionsFrom('METEOR@0.9.1.1');
-  api.addFiles('dfischer:prerenderio.js', 'server');
-  api.addFiles('dfischer:prerender.html', 'client');
+  api.addFiles('prerenderio.js', 'server');
+  api.addFiles('prerender.html', 'client');
 });
 
 Package.onTest(function(api) {
   api.use('tinytest');
-  api.use('dfischer:prerenderio');
-  api.addFiles('dfischer:prerenderio-tests.js');
+  api.use('prerenderio');
+  api.addFiles('prerenderio-tests.js');
 });
