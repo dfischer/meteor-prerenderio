@@ -21,6 +21,6 @@ Package.onUse(function(api) {
 
 Package.onTest(function(api) {
   api.use('tinytest');
-  api.use('prerenderio');
+  api.use('dfischer:prerenderio');
   api.addFiles('prerenderio-tests.js');
 });
