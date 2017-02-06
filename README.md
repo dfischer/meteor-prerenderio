@@ -19,7 +19,7 @@ In your settings.json file include:
 You can also specify the token in your code:
 ```javascript
 prerenderio.set('prerenderServiceUrl', 'http://localhost:3000/');
-prerenderio.set('prerenderToken', 'YOUR_TOKEN'));
+prerenderio.set('prerenderToken', 'YOUR_TOKEN');
 ```
 
 The `prerenderServiceURL` is optional and only used to test the Prerender server locally. [Test It](https://prerender.io/documentation/test-it)
