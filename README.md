@@ -18,7 +18,7 @@ In your settings.json file include:
 
 You can also specify the token in your code:
 ```javascript
-prerenderio.set('prerenderServiceUrl', 'http://localhost:3000/'));
+prerenderio.set('prerenderServiceUrl', 'http://localhost:3000/');
 prerenderio.set('prerenderToken', 'YOUR_TOKEN'));
 ```
 
